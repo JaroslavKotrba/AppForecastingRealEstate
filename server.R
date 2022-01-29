@@ -100,6 +100,7 @@ server <- function(input, output){
   })
   
   # Mortgage
+  options(scipen=999)
   make_instalment <- function(H, i.m, year){(H*(i.m/12)*(1+(i.m/12))^(12*year))/((1+(i.m/12))^(12*year)-1)}
   
   output$payment_per_month <- renderText({
