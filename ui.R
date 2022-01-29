@@ -30,7 +30,7 @@ ui <- dashboardPage(
     selectInput(
       inputId = "rooms",
       label = strong("Select type:", style = "font-family: 'arial', font-size: 14px"),
-      choices = dput(sort(unique(data$rooms))),
+      choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk"),
       selected = "2+kk"
     ),
     
