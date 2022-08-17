@@ -59,14 +59,14 @@ ui <- dashboardPage(
     
     numericInput(
       inputId = "property",
-      label = "Select a property amount:",
+      label = "Predicted price:",
       value = 5000000,
       min = 0, max = 10000000, step = 100000
     ),
     
     numericInput(
       inputId = "mortgage",
-      label = "Select a mortgage amount:",
+      label = "Need to borrow:",
       value = 3000000,
       min = 0, max = 10000000, step = 100000
     ),
@@ -129,7 +129,9 @@ ui <- dashboardPage(
         h4(strong("Real estate visualisation of box plots:"), style="padding-left: 15px"),
         plotlyOutput("box"),
         h4(strong("Real estate visualisation of average price per m2:"), style="padding-left: 15px"),
-        plotlyOutput("ave"),
+        plotlyOutput("avel"),
+        h4(strong("Real estate visualisation of average price per m2:"), style="padding-left: 15px"),
+        plotlyOutput("aver"),
         h4(strong("Real estate visualisation of count of properties:"), style="padding-left: 15px"),
         plotlyOutput("cou"),
         br(),
