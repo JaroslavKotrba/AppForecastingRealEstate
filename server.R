@@ -325,24 +325,26 @@ server <- function(input, output){
         legend.position = "none")
   })
   
-  output$avel <- renderPlotly({
-    # BAR PLOT - price/m2 location
+  output$aver <- renderPlotly({
+    # BAR PLOT - price/m2 rooms
     library(ggplot2)
     library(plotly)
+    library(tidyverse)
     
     data$price_m2 <- round(data$price/data$m2, 2)
-    test <- data %>% group_by(location) %>% 
+    test <- data %>% group_by(rooms) %>% 
       summarise(
         mean_price_m2 = round(mean(price_m2),2)
       )
     
-    g <- ggplot(data=test, aes(reorder(location, mean_price_m2), mean_price_m2, 
-                               text = paste0("Location: ", location, "\n",
+    options(scipen=999)
+    g <- ggplot(data=test, aes(reorder(rooms, mean_price_m2), mean_price_m2, 
+                               text = paste0("Rooms: ", rooms, "\n",
                                              "Average price: ", mean_price_m2, " CZK", "\n"))) +
       geom_col(aes(fill = mean_price_m2), color='black', size=0.2) +
-      xlab("location") +
+      xlab("rooms") +
       ylab("average price per m2") +
-      ggtitle("Average Price per m2 Based on Location") +
+      ggtitle("Average Price per m2 Based on Rooms") +
       theme_bw() +
       scale_fill_gradient2(
         # Color
@@ -370,26 +372,24 @@ server <- function(input, output){
     g <- ggplotly(g, tooltip = c("text"))
   })
   
-  output$aver <- renderPlotly({
-    # BAR PLOT - price/m2 rooms
+  output$avel <- renderPlotly({
+    # BAR PLOT - price/m2 location
     library(ggplot2)
     library(plotly)
-    library(tidyverse)
     
     data$price_m2 <- round(data$price/data$m2, 2)
-    test <- data %>% group_by(rooms) %>% 
+    test <- data %>% group_by(location) %>% 
       summarise(
         mean_price_m2 = round(mean(price_m2),2)
       )
     
-    options(scipen=999)
-    g <- ggplot(data=test, aes(reorder(rooms, mean_price_m2), mean_price_m2, 
-                               text = paste0("Rooms: ", rooms, "\n",
+    g <- ggplot(data=test, aes(reorder(location, mean_price_m2), mean_price_m2, 
+                               text = paste0("Location: ", location, "\n",
                                              "Average price: ", mean_price_m2, " CZK", "\n"))) +
       geom_col(aes(fill = mean_price_m2), color='black', size=0.2) +
-      xlab("rooms") +
+      xlab("location") +
       ylab("average price per m2") +
-      ggtitle("Average Price per m2 Based on Rooms") +
+      ggtitle("Average Price per m2 Based on Location") +
       theme_bw() +
       scale_fill_gradient2(
         # Color
