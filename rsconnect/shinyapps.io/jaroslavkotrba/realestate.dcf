@@ -5,7 +5,7 @@ account: jaroslavkotrba
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6056979
-bundleId: 6209464
+bundleId: 6358465
 url: https://jaroslavkotrba.shinyapps.io/realestate/
-when: 1660721589.67947
-lastSyncTime: 1660721589.67949
+when: 1664614065.8758
+lastSyncTime: 1664614065.87582
