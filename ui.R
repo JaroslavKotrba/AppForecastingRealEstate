@@ -157,6 +157,6 @@ ui <- dashboardPage(
 )
 
 # ui login
-ui <- secure_app(ui, fab_position = "top-right", tag_img = tags$img(
+ui <- secure_app(ui, fab_position = "top-right", enable_admin = TRUE, tag_img = tags$img(
   src = "https://www.r-project.org/logo/Rlogo.png", width = 100
 ))

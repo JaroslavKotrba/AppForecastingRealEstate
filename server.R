@@ -2,8 +2,8 @@
 
 library(shinymanager)
 credentials <- data.frame(
-  user = c("user1", "user2"), # mandatory
-  password = c("pass1", "pass2"), # mandatory
+  user = c("user1", "admin"), # mandatory
+  password = c("pass1", "1234"), # mandatory
   start = c("2022-01-01"), # optinal (all others)
   expire = c(NA, "9999-12-31"),
   admin = c(FALSE, TRUE),
@@ -12,11 +12,21 @@ credentials <- data.frame(
   stringsAsFactors = FALSE
 )
 
+# Init the database
+create_db(
+  credentials_data = credentials,
+  sqlite_path = "database.sqlite",
+  passphrase = "passphrase_wihtout_keyring"
+)
+
 server <- function(input, output){
   
   # Login
   res_auth <- secure_server(
-    check_credentials = check_credentials(credentials)
+    check_credentials = check_credentials(
+      "database.sqlite",
+      passphrase = "passphrase_wihtout_keyring"
+    )  
   )
   
   # Data
