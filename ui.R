@@ -6,6 +6,7 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(plotly)
+library(shinymanager)
 
 library(googlesheets4)
 gs4_deauth() # non restricted
@@ -13,7 +14,7 @@ data <- read_sheet("https://docs.google.com/spreadsheets/d/1BYDc2Fy1rNi3btrMVwSS
 
 # ui
 ui <- dashboardPage(
-  skin='red',
+  skin='blue',
   
   dashboardHeader(
     title = "Real Estate in Brno",
@@ -113,8 +114,7 @@ ui <- dashboardPage(
         verbatimTextOutput("payment_part"),
         br(),
         # icon("glyphicon glyphicon-eye-open", lib = "glyphicon", style="padding-left: 20px"),
-        uiOutput("link1", style="padding-left: 20px"),
-        
+        uiOutput("link1", style="padding-left: 20px")
       ),
       # tab panel number 2
       tabPanel(
@@ -155,3 +155,8 @@ ui <- dashboardPage(
     )
   )
 )
+
+# ui login
+ui <- secure_app(ui, fab_position = "top-right", tag_img = tags$img(
+  src = "https://www.r-project.org/logo/Rlogo.png", width = 100
+))

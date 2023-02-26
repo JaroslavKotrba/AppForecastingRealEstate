@@ -1,6 +1,25 @@
 # server
+
+library(shinymanager)
+credentials <- data.frame(
+  user = c("user1", "user2"), # mandatory
+  password = c("pass1", "pass2"), # mandatory
+  start = c("2022-01-01"), # optinal (all others)
+  expire = c(NA, "9999-12-31"),
+  admin = c(FALSE, TRUE),
+  comment = "Simple and secure authentification mechanism 
+  for single ‘Shiny’ applications.",
+  stringsAsFactors = FALSE
+)
+
 server <- function(input, output){
   
+  # Login
+  res_auth <- secure_server(
+    check_credentials = check_credentials(credentials)
+  )
+  
+  # Data
   library(googlesheets4)
   gs4_deauth() # non restricted
   df <- read_sheet("https://docs.google.com/spreadsheets/d/1BYDc2Fy1rNi3btrMVwSSj9FzDqBYUw-tl-Z0TNE9D9c/edit#gid=1727888783")
