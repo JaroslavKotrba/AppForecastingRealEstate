@@ -1,11 +1,12 @@
 # server
 
 library(shinymanager)
+password <- read.table("password.txt")
 credentials <- data.frame(
   user = c("user1", "admin"), # mandatory
-  password = c("pass1", "1234"), # mandatory
+  password = dput(password$V1), # mandatory
   start = c("2022-01-01"), # optinal (all others)
-  expire = c(NA, "9999-12-31"),
+  expire = c("9999-12-31", NA),
   admin = c(FALSE, TRUE),
   comment = "Simple and secure authentification mechanism 
   for single ‘Shiny’ applications.",
@@ -161,7 +162,7 @@ server <- function(input, output){
   output$rom <- renderPlotly({
     # SCATTER PLOT - rooms
     
-    test <- subset(df, rooms == input$rooms)
+    test <- subset(df, rooms == input$rooms_plot)
     
     X <- test$m2
     y <- test$price
@@ -185,7 +186,7 @@ server <- function(input, output){
       scale_y_continuous(labels = comma, limits = c(1000000, 30000000), breaks = seq(0,30000000, by=3000000)) +
       scale_x_continuous(labels = comma, limits = c(0, 400), breaks = seq(0,400, by=50)) +
       theme(legend.position="right") +
-      ggtitle(paste0("Real Estate ", input$rooms)) +
+      ggtitle(paste0("Real Estate ", input$rooms_plot)) +
       theme_bw() +
       theme(legend.title = element_blank()) +
       theme(  
@@ -216,7 +217,7 @@ server <- function(input, output){
   output$loc <- renderPlotly({
     # SCATTER PLOT - location
     
-    test <- subset(df, location == input$location)
+    test <- subset(df, location == input$location_plot)
     
     X <- test$m2
     y <- test$price
@@ -240,7 +241,7 @@ server <- function(input, output){
       scale_y_continuous(labels = comma, limits = c(1000000, 30000000), breaks = seq(0,30000000, by=3000000)) +
       scale_x_continuous(labels = comma, limits = c(0, 400), breaks = seq(0,400, by=50)) +
       theme(legend.position="right") +
-      ggtitle(paste0("Real Estate ", input$location)) +
+      ggtitle(paste0("Real Estate ", input$location_plot)) +
       theme_bw() +
       theme(legend.title = element_blank()) +
       theme(  
