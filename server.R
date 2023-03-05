@@ -5,7 +5,7 @@ password <- read.table("password.txt")
 credentials <- data.frame(
   user = c("user1", "admin"), # mandatory
   password = dput(password$V1), # mandatory
-  start = c("2022-01-01"), # optinal (all others)
+  start = c("2022-01-01"), # optinal
   expire = c("9999-12-31", NA),
   admin = c(FALSE, TRUE),
   comment = "Simple and secure authentification mechanism 
