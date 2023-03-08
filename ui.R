@@ -104,7 +104,50 @@ ui <- navbarPage(
                uiOutput("link1", style="padding-left: 20px")
              )
            )
-  ), 
+  ),
+  tabPanel("Map",
+           sidebarLayout(
+             sidebarPanel(
+               h5(strong("Map of Brno"), style="padding-left: 15px"),
+               
+               numericInput(
+                 inputId = "price_min",
+                 label = "Min price:",
+                 value = 2500000,
+                 min = 0, max = 100000000, step = 100000
+               ),
+               
+               numericInput(
+                 inputId = "price_max",
+                 label = "Max price:",
+                 value = 8500000,
+                 min = 0, max = 100000000, step = 100000
+               ),
+               
+               selectInput(
+                 inputId = "m2_min",
+                 label = "Min m2:",
+                 choices = c(1:350),
+                 selected = 40
+               ),
+               
+               selectInput(
+                 inputId = "m2_max",
+                 label = "Max m2:",
+                 choices = c(1:350),
+                 selected = 120
+               )
+             ),
+             mainPanel(
+               style="padding-top: 15px",
+               h4(strong("Real estates in Brno and surrounding:"), style="padding-left: 15px"),
+               verbatimTextOutput("plot_error"),
+               plotlyOutput("map"),
+               br(),
+               uiOutput("link2", style="padding-left: 20px")
+             )
+           )
+  ),
   tabPanel("Visualisation",
            style="padding-top: 15px",
            h4(strong("Real estate visualisation rooms:"), style="padding-left: 15px"),
@@ -138,7 +181,7 @@ ui <- navbarPage(
            h4(strong("Real estate visualisation of count of properties:"), style="padding-left: 15px"),
            plotlyOutput("cou"),
            br(),
-           uiOutput("link2", style="padding-left: 20px")
+           uiOutput("link3", style="padding-left: 20px")
   ),
   tabPanel("CNB-Rates",
            style="padding-top: 15px",
@@ -150,7 +193,7 @@ ui <- navbarPage(
            h4(strong("Lombard rates:"), style="padding-left: 15px"),
            plotlyOutput("lombard"),
            br(),
-           uiOutput("link3", style="padding-left: 20px")
+           uiOutput("link4", style="padding-left: 20px")
   )
 )
 

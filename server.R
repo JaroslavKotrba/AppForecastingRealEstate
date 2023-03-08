@@ -159,6 +159,47 @@ server <- function(input, output){
     paste0("Should have own 10%: ", round((input$property/90)*10,2), " CZK, ", "or better 20%: ", round((input$property/80)*20,2), " CZK")
   })
   
+  output$map <- renderPlotly({
+    # MAP
+    
+    library(ggplot2)
+    library(plotly)
+    library(scales)
+    library(ggthemes)
+    library(htmlwidgets)
+    library(ggmap)
+    
+    api <- read.table("api.txt")
+    ggmap::register_google(key = api$V1, write = TRUE) #SECRET
+    
+    test <- subset(df, price >= input$price_min & price <= input$price_max & m2 >= as.integer(input$m2_min) & m2 <= as.integer(input$m2_max))
+    
+    output$plot_error <- renderText({
+      if (dim(test)[1] == 0) {
+        paste0("No such combinations found, please change inputs!")
+      }
+    })
+    
+    Brno <- get_map("Brno,Czech Republic", zoom=11)
+    g <- ggmap(Brno) + geom_point(data=test, aes(x=lon, y=lat, fill=rooms,
+                                                 text = paste0("Type: ", rooms, "\n",
+                                                               "Price: ", price, " CZK", "\n",
+                                                               "M2: ", m2, " m2", "\n",
+                                                               "Location: ", location, "\n", 
+                                                               "Click to view more details"), customdata = link), 
+                                  color="black", shape=15, size=3, alpha=1) + xlab('Brno') + ylab('Brno') + theme_bw()
+    
+    g <- ggplotly(g, tooltip = c("text"))
+    
+    onRender(g, "
+  function(el) {
+    el.on('plotly_click', function(d) {
+      var url = d.points[0].customdata;
+      window.open(url);
+    });
+  }")
+  })
+  
   output$rom <- renderPlotly({
     # SCATTER PLOT - rooms
     
@@ -324,6 +365,7 @@ server <- function(input, output){
   
   output$box <- renderPlotly({
     # BOX PLOT
+    
     library(ggplot2)
     library(plotly)
     library(scales)
@@ -357,6 +399,7 @@ server <- function(input, output){
   
   output$aver <- renderPlotly({
     # BAR PLOT - price/m2 rooms
+    
     library(ggplot2)
     library(plotly)
     library(tidyverse)
@@ -404,6 +447,7 @@ server <- function(input, output){
   
   output$avel <- renderPlotly({
     # BAR PLOT - price/m2 location
+    
     library(ggplot2)
     library(plotly)
     
@@ -449,6 +493,7 @@ server <- function(input, output){
   
   output$cou <- renderPlotly({
     # BAR PLOT - count
+    
     library(ggplot2)
     library(plotly)
     
@@ -490,6 +535,7 @@ server <- function(input, output){
   
   output$repo <- renderPlotly({
     # Repo rate
+    
     library(rvest)
     library(dplyr)
     
@@ -518,6 +564,7 @@ server <- function(input, output){
   
   output$disco <- renderPlotly({
     # Discount rate
+    
     library(rvest)
     library(dplyr)
     
@@ -546,6 +593,7 @@ server <- function(input, output){
   
   output$lombard <- renderPlotly({
     # Lombard rate
+    
     library(rvest)
     library(dplyr)
     
@@ -583,6 +631,10 @@ server <- function(input, output){
   })
   
   output$link3 <- renderUI({
+    tagList("To see other author's projects:", url)
+  })
+  
+  output$link4 <- renderUI({
     tagList("To see other author's projects:", url)
   })
 }
