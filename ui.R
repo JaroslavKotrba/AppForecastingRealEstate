@@ -27,7 +27,7 @@ ui <- navbarPage(
                  inputId = "rooms",
                  label = strong("Select type:", style = "font-family: 'arial', font-size: 14px"),
                  choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk"),
-                 selected = "2+kk"
+                 selected = "3+kk"
                ),
                
                selectInput(
@@ -40,7 +40,7 @@ ui <- navbarPage(
                numericInput(
                  inputId = "m2",
                  label = "Select size of an appartment in m2: ",
-                 value = 65,
+                 value = 75,
                  min = 0, max = 300, step = 1
                ),
                
