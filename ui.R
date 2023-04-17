@@ -140,7 +140,7 @@ ui <- navbarPage(
              ),
              mainPanel(
                style="padding-top: 15px",
-               h4(strong("Real estates in Brno and surrounding:"), style="padding-left: 15px"),
+               h4(strong("Real estates in Brno and surroundings:"), style="padding-left: 15px"),
                verbatimTextOutput("plot_error"),
                plotlyOutput("map"),
                br(),
