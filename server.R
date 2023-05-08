@@ -160,44 +160,59 @@ server <- function(input, output){
   })
   
   output$map <- renderPlotly({
-    # MAP
+    # MAP - href
+    lonlat <- subset(df, lon >= 16 & lon <= 17.1 & lat >= 48.8 & lat <= 50)
+    test <- subset(lonlat, price >= input$price_min & price <= input$price_max & m2 >= as.integer(input$m2_min) & m2 <= as.integer(input$m2_max))
     
-    library(ggplot2)
-    library(plotly)
-    library(scales)
-    library(ggthemes)
-    library(htmlwidgets)
-    library(ggmap)
-    
-    api <- read.table("api.txt")
-    ggmap::register_google(key = api$V1, write = TRUE) #SECRET
-    
-    test <- subset(df, price >= input$price_min & price <= input$price_max & m2 >= as.integer(input$m2_min) & m2 <= as.integer(input$m2_max))
-    
+    # Check for correct inputs
     output$plot_error <- renderText({
       if (dim(test)[1] == 0) {
         paste0("No such combinations found, please change inputs!")
       }
     })
     
-    Brno <- get_map("Brno,Czech Republic", zoom=11)
-    g <- ggmap(Brno) + geom_point(data=test, aes(x=lon, y=lat, fill=rooms,
-                                                 text = paste0("Type: ", rooms, "\n",
-                                                               "Price: ", price, " CZK", "\n",
-                                                               "M2: ", m2, " m2", "\n",
-                                                               "Location: ", location, "\n", 
-                                                               "Click to view more details"), customdata = link), 
-                                  color="black", shape=15, size=3, alpha=1) + xlab('Brno') + ylab('Brno') + theme_bw()
+    library(plotly)
+    library(htmlwidgets)
     
-    g <- ggplotly(g, tooltip = c("text"))
+    plotly <- as.data.frame(subset(test, select = c("price", "rooms", "m2", "location", "lat", "lon", "link")))
+    plotly$hover_text <- paste("<br>",
+                               "Click to VIEW more info:", "<br>",
+                               "Type: ", plotly$rooms, "<br>",
+                               "Price: ", plotly$price, " CZK", "<br>",
+                               "M2: ", plotly$m2, " m2", "<br>")
     
-    onRender(g, "
-  function(el) {
-    el.on('plotly_click', function(d) {
-      var url = d.points[0].customdata;
-      window.open(url);
-    });
-  }")
+    # Create plotly figure
+    fig <- plot_ly(
+      data = plotly,
+      lat = ~lat,
+      lon = ~lon,
+      marker = list(size = 7, color = "blue"),
+      type = 'scattermapbox',
+      hovertext = ~hover_text,
+      customdata = ~link, # stores links as custom data
+      hovertemplate = paste(# renders custom data (link)
+        '<br><extra>%{hovertext}</extra>'), # includes hovertext
+      mode = 'markers+text', # enables clicking on markers
+      textposition = 'middle center', # centers text on markers
+      textfont = list(color = 'black', size = 10) # sets font color and size of text
+    ) %>%
+      # Add custom JavaScript code to open link in new window when marker is clicked
+      onRender("
+                function(el) {
+                  el.on('plotly_click', function(d) {
+                    var url = d.points[0].customdata;
+                    window.open(url);
+                  });
+                }")
+    
+    # Customize layout
+    fig <- fig %>%
+      layout(
+        mapbox = list(
+          style = 'open-street-map',
+          zoom = 10,
+          center = list(lon = 16.6068, lat = 49.1951)),
+        margin = list(l = 0, r = 0, t = 0, b = 0))
   })
   
   output$rom <- renderPlotly({
