@@ -44,8 +44,8 @@ server <- function(input, output){
     summarise (Q1 = quantile(price, probs = 0.25),
                Q3 = quantile(price, probs = 0.75),
                IQR = Q3 - Q1,
-               upper_inner_limit = Q3 + 3 * IQR, # rule of thump - extreme outliers
-               lower_inner_limit = Q1 - 3 * IQR) # rule of thump - extreme outliers
+               upper_inner_limit = Q3 + 2 * IQR, # rule of thump - extreme outliers
+               lower_inner_limit = Q1 - 2 * IQR) # rule of thump - extreme outliers
   
   data <- left_join(data, outlier_limits, by = "rooms") %>% select (-Q1, -Q3, -IQR)
   data <- data %>% mutate(outlier = ifelse(price > lower_inner_limit &
