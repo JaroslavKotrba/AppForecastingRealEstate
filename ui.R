@@ -26,7 +26,7 @@ ui <- navbarPage(
                selectInput(
                  inputId = "rooms",
                  label = strong("Select type:", style = "font-family: 'arial', font-size: 14px"),
-                 choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk"),
+                 choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk", "aty"),
                  selected = "3+kk"
                ),
                
@@ -136,6 +136,14 @@ ui <- navbarPage(
                  label = "Max m2:",
                  choices = c(1:350),
                  selected = 120
+               ),
+               
+               selectInput(
+                 inputId = "rooms_searched",
+                 label = strong("Select type:", style = "font-family: 'arial', font-size: 14px"),
+                 choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk", "aty"),
+                 selected = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk", "aty"),
+                 multiple = TRUE
                )
              ),
              mainPanel(
@@ -155,7 +163,7 @@ ui <- navbarPage(
            selectInput(
              inputId = "rooms_plot",
              label = strong("Select type:", style = "font-family: 'arial', font-size: 14px"),
-             choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk"),
+             choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk", "aty"),
              selected = "2+kk"
            ),
            

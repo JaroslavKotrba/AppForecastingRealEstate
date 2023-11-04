@@ -162,7 +162,7 @@ server <- function(input, output){
   output$map <- renderPlotly({
     # MAP - href
     lonlat <- subset(df, lon >= 16 & lon <= 17.1 & lat >= 48.8 & lat <= 50)
-    test <- subset(lonlat, price >= input$price_min & price <= input$price_max & m2 >= as.integer(input$m2_min) & m2 <= as.integer(input$m2_max))
+    test <- subset(lonlat, price >= input$price_min & price <= input$price_max & m2 >= as.integer(input$m2_min) & m2 <= as.integer(input$m2_max) & rooms %in% input$rooms_searched)
     
     # Check for correct inputs
     output$plot_error <- renderText({
