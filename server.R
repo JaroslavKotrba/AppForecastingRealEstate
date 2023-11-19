@@ -1,10 +1,10 @@
 # server
 
 library(shinymanager)
-password <- read.table("password.txt")
+password <- read.table("password.txt", header = TRUE)
 credentials <- data.frame(
   user = c("user1", "admin"), # mandatory
-  password = dput(password$V1), # mandatory
+  password = dput(password$password), # mandatory
   start = c("2022-01-01"), # optinal (all others)
   expire = c("9999-12-31", NA),
   admin = c(FALSE, TRUE),
