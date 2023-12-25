@@ -3,7 +3,7 @@
 library(shinymanager)
 password <- read.table("password.txt", header = TRUE)
 credentials <- data.frame(
-  user = c("user1", "admin"), # mandatory
+  user = c("user", "admin"), # mandatory
   password = dput(password$password), # mandatory
   start = c("2022-01-01"), # optinal (all others)
   expire = c("9999-12-31", NA),
@@ -33,7 +33,7 @@ server <- function(input, output){
   # Data
   library(googlesheets4)
   gs4_deauth() # non restricted
-  df <- read_sheet("https://docs.google.com/spreadsheets/d/1BYDc2Fy1rNi3btrMVwSSj9FzDqBYUw-tl-Z0TNE9D9c/edit#gid=1727888783")
+  df <- read_sheet("https://docs.google.com/spreadsheets/d/1mgYyObGN0yVBuLClF0Cki0Y-bZ-Fqog6HTS6Hd-cxMQ/edit#gid=245974009")
   
   data <- subset(df, select = c(price, rooms, m2, location))
   
@@ -81,6 +81,11 @@ server <- function(input, output){
   X_test <- data.matrix(test[, -1])
   y_test <- test[ ,1]
   
+  # Scaling
+  mean_train <- mean(y_train)
+  sd_train   <- sd(y_train)
+  y_train <- scale(y_train, center = mean_train, scale = sd_train)
+  
   library(xgboost)
   xgb_train <- xgb.DMatrix(data = X_train, label = y_train)
   xgb_test <- xgb.DMatrix(data = X_test, label = y_test)
@@ -89,7 +94,10 @@ server <- function(input, output){
   # model <- xgboost(data = xgb_train, max.depth = 20, nrounds = 1)
   model <- readRDS("model.rds")
   
-  y_pred <- predict(model, xgb_test); y_pred
+  y_pred <- predict(model, xgb_test)
+  
+  # Scaling
+  y_pred <- y_pred * sd_train + mean_train
   
   library(caret)
   proc <- paste0(round(mean((abs(y_test - y_pred)/y_test)*100), 2), "%")
@@ -103,7 +111,7 @@ server <- function(input, output){
   sample <- tail(train,1)
   sample[dput(colnames(sample))] <- 0
   
-  # Prediction
+  # Predicted price:
   output$prediction <- renderText({
     sample[paste0('rooms_',input$rooms)] <- 1
     sample$m2 <- as.numeric(input$m2)
@@ -115,9 +123,13 @@ server <- function(input, output){
     
     sample_pred <- predict(model, xgb_sample)
     
+    # Scaling
+    sample_pred <- sample_pred * sd_train + mean_train
+    
     paste0("Predicted price: ", round(sample_pred,2), " CZK")
   })
   
+  # Need to borrow:
   output$need_to_borrow <- renderText({
     sample[paste0('rooms_',input$rooms)] <- 1
     sample$m2 <- as.numeric(input$m2)
@@ -128,6 +140,10 @@ server <- function(input, output){
     xgb_sample <- xgb.DMatrix(data = X_sample)
     
     sample_pred <- predict(model, xgb_sample)
+    
+    # Scaling
+    sample_pred <- sample_pred * sd_train + mean_train
+    
     paste0("Need to borrow: ", round(sample_pred,2) - input$savings, " CZK")
   })
   

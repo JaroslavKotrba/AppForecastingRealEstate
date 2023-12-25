@@ -40,8 +40,8 @@ ui <- navbarPage(
                numericInput(
                  inputId = "m2",
                  label = "Select size of an appartment in m2: ",
-                 value = 75,
-                 min = 0, max = 300, step = 1
+                 value = 70,
+                 min = 0, max = 300, step = 10
                ),
                
                numericInput(
