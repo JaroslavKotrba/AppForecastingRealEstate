@@ -144,6 +144,17 @@ ui <- navbarPage(
                  choices = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk", "aty"),
                  selected = c("1+1", "1+kk", "2+1", "2+kk", "3+1", "3+kk", "4+1", "4+kk", "5+1", "5+kk", "aty"),
                  multiple = TRUE
+               ),
+               
+               selectInput(
+                 inputId = "file",
+                 label = strong("Save filtered data as:", style = "font-family: 'arial', font-size: 14px"),
+                 choices = c(".xlsx", ".csv"),
+                 selected = ".xlsx"
+               ),
+               
+               downloadButton(
+                 "downloadData", "Download", class = "btn btn-secondary", icon = shiny::icon("download")
                )
              ),
              mainPanel(

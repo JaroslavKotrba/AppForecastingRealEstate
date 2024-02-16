@@ -5,7 +5,7 @@ password <- read.table("password.txt", header = TRUE)
 credentials <- data.frame(
   user = c("user", "admin"), # mandatory
   password = dput(password$password), # mandatory
-  start = c("2022-01-01"), # optinal (all others)
+  start = c("2022-01-01"), # optional (all others)
   expire = c("9999-12-31", NA),
   admin = c(FALSE, TRUE),
   comment = "Simple and secure authentification mechanism 
@@ -105,7 +105,7 @@ server <- function(input, output){
   rmse <- caret::RMSE(y_test, y_pred)
   
   output$accuracy <- renderText({
-    paste0("Percentage: ", proc,", ", "MAE: ", round(mae,2), ", ", "RMSE: ", round(rmse,2))
+    paste0("MAPE: ", proc,", ", "MAE: ", round(mae,2), ", ", "RMSE: ", round(rmse,2))
   })
   
   sample <- tail(train,1)
@@ -229,6 +229,52 @@ server <- function(input, output){
           zoom = 10,
           center = list(lon = 16.6068, lat = 49.1951)),
         margin = list(l = 0, r = 0, t = 0, b = 0))
+  })
+  
+  
+  datasetInput <- reactive({
+    # DOWNLOAD
+    library(data.table)
+    data <- data.table(df)
+    
+    # Convert list-columns 'lon' and 'lat' to numeric, handling "NA" strings
+    data[, lon := sapply(lon, function(x) ifelse(x == "NA", NA_real_, as.numeric(x)))]
+    data[, lat := sapply(lat, function(x) ifelse(x == "NA", NA_real_, as.numeric(x)))]
+    
+    # Filter
+    lonlat <- subset(data, lon >= 16 & lon <= 17.1 & lat >= 48.8 & lat <= 50)
+    test <- subset(lonlat,
+                   price >= input$price_min &
+                     price <= input$price_max &
+                     m2 >= as.integer(input$m2_min) &
+                     m2 <= as.integer(input$m2_max) &
+                     rooms %in% input$rooms_searched)
+    return(test)
+  })
+  
+  library(openxlsx)
+  observe({
+    if (!is.null(input$file) && length(input$file) > 0) {
+      if (input$file == ".xlsx") {
+        output$downloadData <- downloadHandler(
+          filename = function() {
+            paste("data", ".xlsx", sep = "")
+          },
+          content = function(file) {
+            write.xlsx(datasetInput(), file, row.names = FALSE)
+          }
+        )
+      } else if (input$file == ".csv") {
+        output$downloadData <- downloadHandler(
+          filename = function() {
+            paste("data", ".csv", sep = "")
+          },
+          content = function(file) {
+            write.csv(datasetInput(), file, row.names = FALSE)
+          }
+        )
+      }
+    }
   })
   
   output$rom <- renderPlotly({
