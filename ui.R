@@ -204,7 +204,7 @@ ui <- navbarPage(
   ),
   tabPanel("CNB-Rates",
            style="padding-top: 15px",
-           h5(em(strong("Here is the development of the three main rates given by the CNB, the output is directly taken from the main web page of the CNB.")), style="padding-left: 15px"),
+           h5(em(strong("Here is the development of the three main rates given by the Czech National Bank, the output is directly taken from the main web page of the CNB.")), style="padding-left: 15px"),
            h4(strong("Repo rates:"), style="padding-left: 15px"),
            plotlyOutput("repo"),
            h4(strong("Discount rates:"), style="padding-left: 15px"),
@@ -213,6 +213,14 @@ ui <- navbarPage(
            plotlyOutput("lombard"),
            br(),
            uiOutput("link4", style="padding-left: 20px")
+  ),
+  tabPanel("Inflation",
+           style="padding-top: 15px",
+           h5(em(strong("Here is the inflation in the Czech Republic that is directly taken from the Czech Statistical Office.")), style="padding-left: 15px"),
+           h4(strong("Inflation rates:"), style="padding-left: 15px"),
+           plotlyOutput("inf"),
+           br(),
+           uiOutput("link5", style="padding-left: 20px")
   )
 )
 

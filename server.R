@@ -697,6 +697,54 @@ server <- function(input, output){
       theme_bw()
   })
   
+  output$inf <- renderPlotly({
+    # Inflation rate
+    
+    library(rvest)
+    library(dplyr)
+    library(data.table)
+    library(lubridate)
+    
+    link <- "https://www.czso.cz/csu/czso/mira_inflace"
+    inf <- read_html(link)
+    
+    inf_load <- inf %>% html_nodes("table") %>% .[3] %>% 
+      html_table(fill = TRUE) %>% .[[1]]
+    
+    header.true <- function(df) { # move the first line to the title
+      names(df) <- as.character(unlist(df[1,]))
+      df[-c(1),]}
+    
+    inf_dt <- data.table(header.true(inf_load))
+    colnames(inf_dt) <- c("year", "January", "February", "March",
+                          "April", "May", "June", "July", "August",
+                          "September", "October", "November", "December")
+    
+    # Replace commas with dots and convert to numeric
+    cols <- names(inf_dt)[2:13] # January to December
+    inf_dt[, (cols) := lapply(.SD, function(x) as.numeric(gsub(",", ".", x))), .SDcols = cols]
+    
+    # Melt the data table from wide to long format
+    inf_dt <- melt(inf_dt, id.vars = "year", variable.name = "month", value.name = "rate")
+    
+    # Convert month names to numbers and create a date column
+    inf_dt[, month := match(month, month.name)]
+    inf_dt[, date := as.IDate(paste(year, month, "1", sep = "-"), "%Y-%m-%d")]
+    
+    # Set order and remove NAs
+    inf_dt <- setorder(inf_dt[!is.na(rate)], date)
+    final_dt <- inf_dt[, .(date, rate)]
+    
+    library(ggplot2)
+    options(scipen=999)
+    ggplot(data = final_dt, aes(x=date,y=rate)) +
+      geom_line(color='red', size=1) +
+      geom_point(color='blue', size=2) +
+      ylab("Inflation rate") +
+      xlab("Years") +
+      theme_bw()
+  })
+  
   url <- a("https://jaroslavkotrba.com", href="https://jaroslavkotrba.com/index.html")
   
   output$link1 <- renderUI({
@@ -712,6 +760,10 @@ server <- function(input, output){
   })
   
   output$link4 <- renderUI({
+    tagList("To see other author's projects:", url)
+  })
+  
+  output$link5 <- renderUI({
     tagList("To see other author's projects:", url)
   })
 }
