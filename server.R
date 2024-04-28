@@ -149,26 +149,26 @@ server <- function(input, output){
   
   # Mortgage
   options(scipen=999)
-  make_instalment <- function(H, i.m, year){(H*(i.m/12)*(1+(i.m/12))^(12*year))/((1+(i.m/12))^(12*year)-1)}
+  make_installment <- function(H, i.m, year){(H*(i.m/12)*(1+(i.m/12))^(12*year))/((1+(i.m/12))^(12*year)-1)}
   
   output$payment_per_month <- renderText({
-    paste0("Mortgage payment per month: ", round(make_instalment(input$mortgage, input$i.m, as.numeric(input$year)),2), " CZK")
+    paste0("Mortgage payment per month: ", round(make_installment(input$mortgage, input$i.m, as.numeric(input$year)),2), " CZK")
   })
   
   output$payment_total <- renderText({
-    paste0("Mortgage payment in total: ", round(make_instalment(input$mortgage, input$i.m, as.numeric(input$year))*(as.numeric(input$year)*12),2), " CZK")
+    paste0("Mortgage payment in total: ", round(make_installment(input$mortgage, input$i.m, as.numeric(input$year))*(as.numeric(input$year)*12),2), " CZK")
   })
   
   output$payment_difference <- renderText({
-    paste0("Will pay more in CZK: ", round(make_instalment(input$mortgage, input$i.m, as.numeric(input$year))*(as.numeric(input$year)*12) - input$mortgage,2), " CZK")
+    paste0("Will pay more in CZK: ", round(make_installment(input$mortgage, input$i.m, as.numeric(input$year))*(as.numeric(input$year)*12) - input$mortgage,2), " CZK")
   })
   
   output$payment_more <- renderText({
-    paste0("Will pay more in %: ", round(((make_instalment(input$mortgage, input$i.m, as.numeric(input$year))*(as.numeric(input$year)*12)/input$mortgage)-1)*100,2), " %")
+    paste0("Will pay more in %: ", round(((make_installment(input$mortgage, input$i.m, as.numeric(input$year))*(as.numeric(input$year)*12)/input$mortgage)-1)*100,2), " %")
   })
   
   output$payment_salary <- renderText({
-    paste0("Should earn netto per month: ", round(((make_instalment(input$mortgage, input$i.m, as.numeric(input$year))/45)*55) + make_instalment(input$mortgage, input$i.m, as.numeric(input$year)), 2), " CZK")
+    paste0("Should earn netto per month: ", round(((make_installment(input$mortgage, input$i.m, as.numeric(input$year))/45)*55) + make_installment(input$mortgage, input$i.m, as.numeric(input$year)), 2), " CZK")
   })
   
   output$payment_part <- renderText({
